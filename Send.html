@@ -1,0 +1,162 @@
+<html lang="en" class="hydrated"><head><style data-styles="">ion-icon{visibility:hidden}.hydrated{visibility:inherit}</style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <title>Mera Hisab | Send</title>
+    <meta name="description" content="Finapp HTML Mobile Template">
+    <meta name="keywords" content="bootstrap, wallet, banking, fintech mobile template, cordova, phonegap, mobile, html, responsive">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/icon/192x192.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="manifest" href="__manifest.json">
+</head>
+
+<body class="">
+
+
+    <!-- App Header -->
+    <div class="appHeader">
+        <div class="left">
+            <a href="Home.html" class="headerButton goBack">
+                <ion-icon name="chevron-back-outline" role="img" class="md hydrated" aria-label="chevron back outline"></ion-icon>
+            </a>
+        </div>
+        <div class="pageTitle">
+            Transactions
+        </div>
+        <div class="right">
+         <ion-icon name="refresh-outline"  class="btn btn-sm btn-primary" onclick="location.reload()"></ion-icon>
+        </div>
+    </div>
+    <!-- * App Header -->
+
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+
+        <!-- Transactions -->
+        <div class="section mt-2">
+            <div class="section-title">Today</div>
+            <div class="transactions" id="taskList" >
+      
+            </div>
+        </div>
+
+
+
+    </div>
+    <!-- * App Capsule -->
+
+
+    <!-- ========= JS Files =========  -->
+    <!-- Bootstrap -->
+    <script src="assets/js/lib/bootstrap.bundle.min.js"></script>
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <!-- Splide -->
+    <script src="assets/js/plugins/splide/splide.min.js"></script>
+    <!-- Base Js File -->
+  <script type="module">
+const DocPage = document.querySelector("#taskList");
+
+import {
+  getDatabase,
+  ref,
+  onValue,
+  remove,
+  set,
+  push
+} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCVlKPvkcfTvadXA83BzdeR7LsH3MPHzKk",
+  authDomain: "mera-hisab-cd31c.firebaseapp.com",
+  databaseURL: "https://mera-hisab-cd31c-default-rtdb.firebaseio.com",
+  projectId: "mera-hisab-cd31c",
+  storageBucket: "mera-hisab-cd31c.appspot.com",
+  messagingSenderId: "209448682832",
+  appId: "1:209448682832:web:40bc61b9b02ffc5fb0d855",
+  measurementId: "G-D39XZXJM4F"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+
+const userMobile = localStorage.getItem("Mobile");
+
+let SendRef = `${userMobile}=Send`;
+
+window.addEventListener('load', () => {
+  if (SendRef) {
+    let totalAmount = 0; // Variable to track the total amount
+
+    onValue(ref(database, SendRef), (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        const childData = childSnapshot.val();
+        const SenderName = childData.Name;
+        const SenderAmount = childData.Amount;
+        totalAmount += parseFloat(SenderAmount); // Convert to float if necessary
+
+        // Display data in the HTML
+        DocPage.innerHTML += `<a href="#" class="item">
+          <div class="detail">
+            <img src="send.png" alt="img" class="image-block imaged w48">
+            <div>
+              <strong>${SenderName}</strong>
+              <p>Send</p>
+            </div>
+          </div>
+          <div class="right">
+            <div class="price text-success"> ₹ ${SenderAmount}</div>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-danger btn-sm" type="button" data-document-id="${childSnapshot.key}" data-delete-btn>
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </a>`;
+      });
+
+      console.log("Total Amount: ₹", totalAmount); // Log the total amount
+     localStorage.setItem("Total", totalAmount)
+      // Add click event listener to delete buttons
+      const deleteButtons = document.querySelectorAll(".btn-danger");
+      deleteButtons.forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+          const documentIdToDelete = event.target.getAttribute("data-document-id");
+          if (documentIdToDelete) {
+            const documentRefToDelete = ref(database, `${SendRef}/${documentIdToDelete}`);
+            deleteDoc(documentRefToDelete);
+          }
+        });
+      });
+    });
+  } else {
+    console.error('User mobile number not found in localStorage');
+  }
+});
+
+// Function to delete a document from Firebase
+async function deleteDoc(docRef) {
+  try {
+    await remove(docRef);
+    alert("Record successfully deleted!");
+    location.reload();
+  } catch (error) {
+    console.error("Record deletion unsuccessful. Please try again!");
+    setInterval(function() {
+      location.reload();
+    }, 500);
+  }
+}
+
+
+  
+  </script>
+</body></html>
