@@ -38,12 +38,21 @@ function SendMoneyForm(e) {
   e.preventDefault()
   const SendingDetails = SenderName.value;
   const SendingMoney = SendAmount.value;
+var currentDate = new Date();
+
+var day = currentDate.getDate(); // gets the day of the month (1-31)
+var month = currentDate.getMonth() + 1; // gets the month (0-11), so we add 1
+var hrs = currentDate.getHours();
+var min = currentDate.getMinutes()
+
+let time = `Date:- ${day}/${month} <br> Time:- ${hrs}-${min}`
 
   if (SendingDetails && SendingMoney) {
     const usersRef = push(ref(database, SendRef));
     set(usersRef, {
       Name: SendingDetails,
-      Amount: SendingMoney
+      Amount: SendingMoney,
+      Time: time
     })
       .then(() => {
         alert("Record Added Successfully 🙂");
