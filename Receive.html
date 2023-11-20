@@ -108,6 +108,7 @@ if (ReceiveRef) {
       const SenderName = childData.Name;
       const SenderAmount = childData.Amount;
       const documentId = childSnapshot.key;
+             const time = childData.Time
         totalAmount += parseFloat(SenderAmount); // Convert to float if necessary
       // Display data in the HTML
       DocPage.innerHTML += `<a href="#" class="item">
@@ -115,7 +116,7 @@ if (ReceiveRef) {
           <img style="transform:rotate(180deg)" src="send.png" alt="img" class="image-block imaged w48">
           <div>
             <strong>${SenderName}</strong>
-            <p>Send</p>
+            <p>${time}</p>
           </div>
         </div>
         <div class="right">
