@@ -101,7 +101,8 @@ window.addEventListener('load', () => {
         const childData = childSnapshot.val();
         const SenderName = childData.Name;
         const SenderAmount = childData.Amount;
-        totalAmount += parseFloat(SenderAmount); // Convert to float if necessary
+          const time = childData.Time
+          totalAmount += parseFloat(SenderAmount); // Convert to float if necessary
 
         // Display data in the HTML
         DocPage.innerHTML += `<a href="#" class="item">
@@ -109,7 +110,7 @@ window.addEventListener('load', () => {
             <img src="send.png" alt="img" class="image-block imaged w48">
             <div>
               <strong>${SenderName}</strong>
-              <p>Send</p>
+              <p>${time}</p>
             </div>
           </div>
           <div class="right">
